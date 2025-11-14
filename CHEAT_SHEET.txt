@@ -1,0 +1,323 @@
+# Day Trading Screener - One-Page Cheat Sheet
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                   DAY TRADING SCREENER CHEAT SHEET                        ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ QUICK START                                                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  Run Screener:  python day_trading_screener.py                          │
+│  Run Examples:  python examples.py                                      │
+│  Edit Settings: nano config.py   (or any text editor)                   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ BEST TIMES TO RUN                                                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ⏰ 8:00-9:00 AM ET    Pre-market prep     [Create watchlist]           │
+│  ⏰ 9:45 AM ET         Opening momentum    [Find hot stocks]            │
+│  ⏰ 10:30 AM ET        Mid-morning scan    [Second wave]                │
+│  ⏰ 2:30 PM ET         Power hour setup    [Final opportunities]        │
+│                                                                          │
+│  Best Trading Hours: 9:30-11:00 AM  and  2:00-4:00 PM                   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ READING THE OUTPUT                                                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  #1. NVDA - $145.32             ← Rank | Ticker | Current Price         │
+│     Direction: LONG              ← LONG (buy) | SHORT (sell) | NEUTRAL  │
+│     Confidence Score: 87.5/100   ← Higher = Better (aim for >70%)       │
+│     Predicted Move: +2.34%       ← Expected price change today          │
+│     Risk Level: MEDIUM           ← LOW | MEDIUM | HIGH                  │
+│     Day Change: +1.23%           ← How much moved today                 │
+│     RSI: 45.2                    ← <30 oversold | >70 overbought        │
+│     Volume Ratio: 1.87x          ← >1.5x = strong | <1.0 = weak         │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ CONFIDENCE SCORE GUIDE                                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  90-100%  │ ⭐⭐⭐⭐⭐  │ Extremely Strong  │ High priority              │
+│  80-89%   │ ⭐⭐⭐⭐   │ Very Strong       │ Great opportunities        │
+│  70-79%   │ ⭐⭐⭐    │ Strong            │ Good for trading           │
+│  60-69%   │ ⭐⭐     │ Moderate          │ Be cautious                │
+│  50-59%   │ ⭐      │ Weak              │ Skip or watch only         │
+│  < 50%    │ ❌      │ Very Weak         │ Avoid trading              │
+│                                                                          │
+│  👉 BEGINNERS: Only trade >75%                                           │
+│  👉 INTERMEDIATE: Trade >70%                                             │
+│  👉 ADVANCED: Can trade >65% with good volume                            │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ RISK LEVELS                                                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  LOW Risk:                                                               │
+│    • Stable, predictable movement                                        │
+│    • Good for beginners                                                  │
+│    • Position: Up to 20% of portfolio                                    │
+│    • Stop: 2% below entry                                                │
+│                                                                          │
+│  MEDIUM Risk:                                                            │
+│    • Normal day trading volatility                                       │
+│    • Standard risk                                                       │
+│    • Position: 10-15% of portfolio                                       │
+│    • Stop: 1.5-2% below entry                                            │
+│                                                                          │
+│  HIGH Risk:                                                              │
+│    • Very volatile, fast-moving                                          │
+│    • Experienced traders only                                            │
+│    • Position: 5-10% of portfolio                                        │
+│    • Stop: 1% below entry                                                │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ DECISION TREE: SHOULD I TRADE THIS?                                    │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─ Confidence > 70%?          NO  → ❌ SKIP                             │
+│  │         YES ↓                                                         │
+│  │                                                                       │
+│  ┌─ Direction is LONG/SHORT?  NO (NEUTRAL) → ❌ SKIP                    │
+│  │         YES ↓                                                         │
+│  │                                                                       │
+│  ┌─ Volume Ratio > 1.2x?       NO  → ⚠️  BE CAUTIOUS                    │
+│  │         YES ↓                                                         │
+│  │                                                                       │
+│  ┌─ Risk Level acceptable?     NO  → ❌ SKIP OR REDUCE SIZE             │
+│  │         YES ↓                                                         │
+│  │                                                                       │
+│  ┌─ Market trend aligned?      NO  → ⚠️  BE CAUTIOUS                    │
+│  │         YES ↓                                                         │
+│  │                                                                       │
+│  └─ ✅ CONSIDER TRADING                                                  │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TRADE PLANNING FORMULA                                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  Current Price:    $145.32                                               │
+│  Predicted Move:   +2.34%                                                │
+│  Target Price:     $145.32 × 1.0234 = $148.72                           │
+│  Stop Loss (2%):   $145.32 × 0.98 = $142.41                             │
+│                                                                          │
+│  Risk Per Share:   $145.32 - $142.41 = $2.91                            │
+│  Reward Per Share: $148.72 - $145.32 = $3.40                            │
+│  Risk/Reward:      $3.40 / $2.91 = 1.17:1  ✅ (>1:1 is acceptable)      │
+│                                                                          │
+│  Account Size:     $10,000                                               │
+│  Max Risk:         2% = $200                                             │
+│  Shares to Buy:    $200 / $2.91 = 68 shares                             │
+│  Investment:       68 × $145.32 = $9,881.76                             │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ COMMON SETTINGS (config.py)                                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  FILTERING:                                                              │
+│    MIN_PRICE = 5.0           # Only stocks $5+                          │
+│    MAX_PRICE = 500.0         # Only stocks under $500                   │
+│    MIN_VOLUME = 1_000_000    # Minimum 1M daily volume                  │
+│                                                                          │
+│  INDICATORS:                                                             │
+│    RSI_PERIOD = 14           # Standard RSI                             │
+│    MACD_FAST = 12            # Fast MACD line                           │
+│    MACD_SLOW = 26            # Slow MACD line                           │
+│    BB_PERIOD = 20            # Bollinger Bands period                   │
+│                                                                          │
+│  THRESHOLDS:                                                             │
+│    RSI_OVERSOLD = 30         # Buy signal                               │
+│    RSI_OVERBOUGHT = 70       # Sell signal                              │
+│    HIGH_VOLUME_THRESHOLD = 1.5   # 1.5x average = high                  │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ QUICK CUSTOMIZATION PRESETS                                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  SCALPER (Fast trades):                                                  │
+│    RSI_PERIOD = 7, MACD_FAST = 6, Scan every 30 min                     │
+│                                                                          │
+│  DAY TRADER (Standard):                                                  │
+│    Use defaults, Scan 2-3x per day                                       │
+│                                                                          │
+│  SWING TRADER (Longer holds):                                            │
+│    RSI_PERIOD = 21, MACD_FAST = 18, Scan once daily                     │
+│                                                                          │
+│  CONSERVATIVE (Low risk):                                                │
+│    MIN_PRICE = 20, MIN_CONFIDENCE_SCORE = 75, Only LOW risk             │
+│                                                                          │
+│  AGGRESSIVE (High risk/reward):                                          │
+│    MIN_CONFIDENCE_SCORE = 60, Include HIGH risk stocks                   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TECHNICAL INDICATORS QUICK REFERENCE                                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  RSI (Relative Strength Index):                                          │
+│    < 30  = Oversold (potential buy)     🔵                               │
+│    > 70  = Overbought (potential sell)  🔴                               │
+│                                                                          │
+│  MACD (Moving Average Convergence Divergence):                           │
+│    Line crosses above signal = Bullish  📈                               │
+│    Line crosses below signal = Bearish  📉                               │
+│                                                                          │
+│  Bollinger Bands:                                                         │
+│    Price at lower band = Potential bounce up   🔵                        │
+│    Price at upper band = Potential pullback    🔴                        │
+│    BB Squeeze = Breakout coming               ⚡                         │
+│                                                                          │
+│  VWAP (Volume Weighted Average Price):                                   │
+│    Price > VWAP = Bullish (buyers control)    📈                         │
+│    Price < VWAP = Bearish (sellers control)   📉                         │
+│                                                                          │
+│  Volume Ratio:                                                            │
+│    > 1.5x = High interest, strong signal      ✅                         │
+│    < 1.0x = Low interest, weak signal         ❌                         │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ DAILY WORKFLOW CHECKLIST                                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  PRE-MARKET (8:00-9:30 AM):                                              │
+│    □ Run screener                                                        │
+│    □ Review top 10-15 opportunities                                      │
+│    □ Create watchlist (Tier 1, 2, 3)                                     │
+│    □ Check news on top picks                                             │
+│    □ Set up charts and alerts                                            │
+│    □ Plan entries, targets, stops                                        │
+│                                                                          │
+│  MARKET HOURS (9:30 AM - 4:00 PM):                                       │
+│    □ 9:30 AM - Monitor market open                                       │
+│    □ 9:45 AM - Enter high-conviction trades                              │
+│    □ 10:30 AM - Re-scan for new opportunities                            │
+│    □ 12:00 PM - Mid-day review                                           │
+│    □ 2:30 PM - Afternoon scan                                            │
+│    □ 3:45 PM - Plan exits for day trades                                 │
+│                                                                          │
+│  POST-MARKET (After 4:00 PM):                                            │
+│    □ Review all trades                                                   │
+│    □ Update trading journal                                              │
+│    □ Calculate win rate and P&L                                          │
+│    □ Note what worked / didn't work                                      │
+│    □ Adjust strategy if needed                                           │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ RED FLAGS - DO NOT TRADE IF:                                           │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ❌ Confidence Score < 60%                                               │
+│  ❌ Direction is NEUTRAL                                                 │
+│  ❌ Volume Ratio < 1.0 (low activity)                                    │
+│  ❌ You don't understand why it's moving                                 │
+│  ❌ Trading against overall market trend                                 │
+│  ❌ Already hit your daily loss limit                                    │
+│  ❌ Trading emotionally (revenge trading)                                │
+│  ❌ You're tired, stressed, or distracted                                │
+│  ❌ No clear exit plan                                                   │
+│  ❌ Position size too large for account                                  │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ POSITION SIZING RULES                                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  The 2% Rule:                                                            │
+│    Never risk more than 2% of your account on a single trade            │
+│                                                                          │
+│  Example with $10,000 account:                                           │
+│    Max risk per trade: $200                                              │
+│    If stop is $3 per share: Buy max 66 shares                           │
+│    If stop is $5 per share: Buy max 40 shares                           │
+│                                                                          │
+│  Position Limits:                                                         │
+│    Single stock: Max 20% of portfolio                                    │
+│    Sector total: Max 50% of portfolio                                    │
+│    Total open: Max 5-6 positions                                         │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ USEFUL COMMANDS                                                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  # Run basic scan                                                        │
+│  python day_trading_screener.py                                         │
+│                                                                          │
+│  # Run examples with menu                                                │
+│  python examples.py                                                      │
+│                                                                          │
+│  # Check your configuration                                              │
+│  python config.py                                                        │
+│                                                                          │
+│  # Custom scan in Python                                                 │
+│  from day_trading_screener import DayTradingScreener                    │
+│  screener = DayTradingScreener()                                        │
+│  results = screener.scan_all_stocks(top_n=10)                           │
+│  screener.analyze_stock('AAPL')                                         │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TROUBLESHOOTING                                                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  No results found:                                                       │
+│    → Lower MIN_VOLUME in config.py                                       │
+│    → Check if market is open                                             │
+│    → Try different time of day                                           │
+│                                                                          │
+│  Too slow:                                                               │
+│    → Reduce stock universe                                               │
+│    → Use custom ticker list                                              │
+│    → Run during off-peak hours                                           │
+│                                                                          │
+│  Import errors:                                                          │
+│    → Run: pip install -r requirements.txt                                │
+│    → Check Python version (need 3.8+)                                    │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  💡 GOLDEN RULES                                                          ║
+║                                                                            ║
+║  1. Never trade without a plan (entry, target, stop)                      ║
+║  2. Always use stop losses (no exceptions!)                               ║
+║  3. Risk management is #1 priority                                        ║
+║  4. Start small, build confidence                                         ║
+║  5. Keep a trading journal                                                ║
+║  6. Paper trade before using real money                                   ║
+║  7. Don't fight the market trend                                          ║
+║  8. Trust high confidence scores (>70%)                                   ║
+║  9. Volume confirms the move                                              ║
+║  10. When in doubt, stay out!                                             ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+                          Print this page for your desk! 
+                     For full guide, see BEGINNERS_GUIDE.md
+```
