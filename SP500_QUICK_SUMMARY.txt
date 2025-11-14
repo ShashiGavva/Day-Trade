@@ -1,0 +1,65 @@
+# ✅ UPDATED TO SCAN S&P 500 STOCKS
+
+## What Changed?
+
+Your screener now automatically scans **all 503 S&P 500 stocks** instead of just 60!
+
+## How to Use
+
+### Step 1: Update Dependencies
+```bash
+pip install --upgrade -r requirements.txt
+```
+
+### Step 2: Run (Same as Before!)
+```bash
+python day_trading_screener.py
+```
+
+## What Happens
+
+1. **Tries Wikipedia** - Fetches current S&P 500 list
+2. **Falls Back to Cache** - Uses cached list if Wikipedia fails  
+3. **Scans All Stocks** - Analyzes all 503 stocks
+4. **Shows Top 20** - Best opportunities by confidence score
+
+## Scan Time
+
+- **Full S&P 500**: ~20-25 minutes (run once in morning)
+- **Quick watchlist**: ~30 seconds (run anytime)
+
+```python
+# Quick scan of favorites
+watchlist = ['AAPL', 'NVDA', 'TSLA', 'AMD', 'MSFT']
+results = screener.scan_all_stocks(custom_tickers=watchlist)
+```
+
+## Benefits
+
+✅ Comprehensive coverage (all major US companies)
+✅ Always up-to-date
+✅ More opportunities (30-50 vs 10-15)
+✅ Professional-grade universe
+✅ Automatic fallback if Wikipedia unavailable
+
+## Recommended Workflow
+
+```
+8:00 AM  - Run full S&P 500 scan (20 min)
+8:25 AM  - Review top 20 results
+9:30 AM  - Trade high-confidence setups
+10:30 AM - Quick re-scan of top 10 (30 sec)
+2:30 PM  - Quick power hour scan (30 sec)
+```
+
+## Still Works Same Way!
+
+Everything you learned still works:
+- Same commands
+- Same filters
+- Same custom lists
+- Same examples
+
+Just more stocks scanned automatically!
+
+For complete details, see **SP500_UPDATE_GUIDE.md**

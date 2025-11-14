@@ -1,6 +1,7 @@
 """
 Day Trading Stock Screener
 Analyzes US stocks and provides day trading recommendations with confidence scores
+Now automatically scans all S&P 500 stocks!
 """
 
 import yfinance as yf
@@ -10,6 +11,13 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Tuple
 import warnings
 warnings.filterwarnings('ignore')
+
+# Try to import cached S&P 500 list
+try:
+    from sp500_cached_list import get_cached_sp500
+    HAS_CACHED_SP500 = True
+except ImportError:
+    HAS_CACHED_SP500 = False
 
 class DayTradingScreener:
     """
@@ -29,23 +37,70 @@ class DayTradingScreener:
         self.min_price = min_price
         self.max_price = max_price
         self.min_volume = min_volume
+        self.sp500_tickers = None  # Cache S&P 500 list
         
-    def get_stock_universe(self, custom_tickers: List[str] = None) -> List[str]:
+    def fetch_sp500_tickers(self) -> List[str]:
         """
-        Get list of stocks to analyze
+        Fetch current S&P 500 stock tickers from Wikipedia
         
-        Args:
-            custom_tickers: Optional list of specific tickers to analyze
-            
         Returns:
-            List of stock tickers
+            List of S&P 500 stock tickers
         """
-        if custom_tickers:
-            return custom_tickers
+        if self.sp500_tickers is not None:
+            return self.sp500_tickers
+            
+        try:
+            print("Fetching S&P 500 stock list from Wikipedia...")
+            
+            # Read S&P 500 list from Wikipedia
+            url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+            tables = pd.read_html(url)
+            
+            # First table contains the S&P 500 companies
+            sp500_table = tables[0]
+            
+            # Extract ticker symbols
+            tickers = sp500_table['Symbol'].tolist()
+            
+            # Clean tickers (remove any newlines or extra characters)
+            tickers = [ticker.replace('\n', '').strip() for ticker in tickers]
+            
+            # Some tickers may have class distinctions (like BRK.B, BF.B)
+            # These are already in the correct format for yfinance
+            
+            self.sp500_tickers = tickers
+            
+            print(f"✅ Successfully fetched {len(tickers)} S&P 500 stocks")
+            print(f"   Sample: {', '.join(tickers[:5])}...")
+            
+            return tickers
+            
+        except Exception as e:
+            print(f"⚠️  Could not fetch from Wikipedia: {str(e)[:100]}")
+            
+            # Try cached list as first fallback
+            if HAS_CACHED_SP500:
+                try:
+                    print("   Using cached S&P 500 list...")
+                    tickers = get_cached_sp500()
+                    self.sp500_tickers = tickers
+                    print(f"✅ Loaded {len(tickers)} stocks from cached S&P 500 list")
+                    return tickers
+                except Exception as cache_error:
+                    print(f"   Cache error: {cache_error}")
+            
+            # Final fallback to default universe
+            print("   Falling back to default stock universe (60 stocks)...")
+            return self._get_default_universe()
+    
+    def _get_default_universe(self) -> List[str]:
+        """
+        Fallback default stock universe if S&P 500 fetch fails
         
-        # Default universe - popular day trading stocks
-        # In production, you'd pull from S&P 500, NASDAQ 100, or use a stock screener API
-        universe = [
+        Returns:
+            List of default stock tickers
+        """
+        return [
             # Tech
             'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'NVDA', 'TSLA', 'AMD', 'INTC',
             # Finance
@@ -61,7 +116,22 @@ class DayTradingScreener:
             'BA', 'DIS', 'NFLX', 'PYPL', 'SQ', 'COIN', 'ROKU',
         ]
         
-        return universe
+    def get_stock_universe(self, custom_tickers: List[str] = None) -> List[str]:
+        """
+        Get list of stocks to analyze
+        
+        Args:
+            custom_tickers: Optional list of specific tickers to analyze
+            
+        Returns:
+            List of stock tickers
+        """
+        if custom_tickers:
+            print(f"Using custom stock list: {len(custom_tickers)} stocks")
+            return custom_tickers
+        
+        # Default: Fetch all S&P 500 stocks
+        return self.fetch_sp500_tickers()
     
     def fetch_stock_data(self, ticker: str, period: str = "5d", 
                         interval: str = "5m") -> pd.DataFrame:
@@ -501,20 +571,39 @@ class DayTradingScreener:
         universe = self.get_stock_universe(custom_tickers)
         results = []
         
-        print(f"Scanning {len(universe)} stocks...")
+        total_stocks = len(universe)
+        print(f"\n{'='*80}")
+        print(f"🔍 SCANNING {total_stocks} STOCKS FOR DAY TRADING OPPORTUNITIES")
+        print(f"{'='*80}\n")
+        
+        start_time = datetime.now()
         
         for i, ticker in enumerate(universe):
-            if (i + 1) % 10 == 0:
-                print(f"Progress: {i + 1}/{len(universe)}")
+            # Progress indicator every 25 stocks
+            if (i + 1) % 25 == 0 or i == 0:
+                elapsed = (datetime.now() - start_time).seconds
+                stocks_per_sec = (i + 1) / max(elapsed, 1)
+                remaining = (total_stocks - i - 1) / max(stocks_per_sec, 0.1)
+                print(f"Progress: {i + 1}/{total_stocks} stocks "
+                      f"({((i+1)/total_stocks*100):.1f}%) - "
+                      f"~{int(remaining/60)}min {int(remaining%60)}sec remaining")
             
             analysis = self.analyze_stock(ticker)
             
             if analysis:
                 results.append(analysis)
         
-        print(f"\nCompleted scan. Found {len(results)} viable stocks.")
+        elapsed_time = (datetime.now() - start_time).seconds
+        print(f"\n{'='*80}")
+        print(f"✅ Scan Complete!")
+        print(f"   Total time: {int(elapsed_time/60)}min {elapsed_time%60}sec")
+        print(f"   Stocks analyzed: {total_stocks}")
+        print(f"   Viable opportunities: {len(results)}")
+        print(f"{'='*80}\n")
         
         if not results:
+            print("⚠️  No trading opportunities found matching your criteria.")
+            print("   Try adjusting filters in config.py (lower min_volume or min_price)")
             return pd.DataFrame()
         
         # Convert to DataFrame

@@ -1,6 +1,7 @@
 """
 Advanced Day Trading Screener with Machine Learning
 Includes sentiment analysis integration and ML-based predictions
+Now automatically scans all S&P 500 stocks!
 """
 
 import yfinance as yf
@@ -39,7 +40,45 @@ class AdvancedDayTradingScreener:
         self.use_ml = use_ml
         self.ml_model = None
         self.scaler = StandardScaler()
+        self.sp500_tickers = None  # Cache S&P 500 list
         
+    def fetch_sp500_tickers(self) -> List[str]:
+        """
+        Fetch current S&P 500 stock tickers from Wikipedia
+        
+        Returns:
+            List of S&P 500 stock tickers
+        """
+        if self.sp500_tickers is not None:
+            return self.sp500_tickers
+            
+        try:
+            print("Fetching S&P 500 stock list from Wikipedia...")
+            
+            # Read S&P 500 list from Wikipedia
+            url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+            tables = pd.read_html(url)
+            
+            # First table contains the S&P 500 companies
+            sp500_table = tables[0]
+            
+            # Extract ticker symbols
+            tickers = sp500_table['Symbol'].tolist()
+            
+            # Clean tickers (remove any newlines or extra characters)
+            tickers = [ticker.replace('\n', '').strip() for ticker in tickers]
+            
+            self.sp500_tickers = tickers
+            
+            print(f"✅ Successfully fetched {len(tickers)} S&P 500 stocks")
+            
+            return tickers
+            
+        except Exception as e:
+            print(f"❌ Error fetching S&P 500 list: {e}")
+            print("   Falling back to extended universe...")
+            return self.get_extended_universe()
+    
     def get_extended_universe(self) -> List[str]:
         """
         Get comprehensive list of day-tradable stocks
