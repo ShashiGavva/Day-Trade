@@ -10,6 +10,8 @@ import numpy as np
 from datetime import datetime, timedelta
 from typing import List, Dict, Tuple
 import warnings
+import time
+import random
 warnings.filterwarnings('ignore')
 
 # Try to import cached S&P 500 list
@@ -588,10 +590,29 @@ class DayTradingScreener:
                       f"({((i+1)/total_stocks*100):.1f}%) - "
                       f"~{int(remaining/60)}min {int(remaining%60)}sec remaining")
             
-            analysis = self.analyze_stock(ticker)
-            
-            if analysis:
-                results.append(analysis)
+            try:
+                analysis = self.analyze_stock(ticker)
+                
+                if analysis:
+                    results.append(analysis)
+                
+                # Add delay to avoid rate limiting (2-3 seconds between requests)
+                time.sleep(random.uniform(2.0, 3.0))
+                
+            except Exception as e:
+                # Handle rate limiting
+                if "rate limit" in str(e).lower() or "too many requests" in str(e).lower():
+                    print(f"   ⚠️  Rate limit hit, pausing 30 seconds...")
+                    time.sleep(30)
+                    # Retry this stock
+                    try:
+                        analysis = self.analyze_stock(ticker)
+                        if analysis:
+                            results.append(analysis)
+                    except:
+                        pass
+                # Continue on other errors
+                pass
         
         elapsed_time = (datetime.now() - start_time).seconds
         print(f"\n{'='*80}")

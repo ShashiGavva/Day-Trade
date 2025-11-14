@@ -6,6 +6,8 @@ Scans all 503 S&P 500 stocks with advanced indicators
 from advanced_screener import AdvancedDayTradingScreener
 from datetime import datetime
 import pandas as pd
+import time
+import random
 
 def main():
     print("=" * 80)
@@ -55,9 +57,22 @@ def main():
             
             if analysis:
                 results.append(analysis)
+            
+            # Add delay to avoid rate limiting (2-3 seconds between requests)
+            time.sleep(random.uniform(2.0, 3.0))
         
         except Exception as e:
             # Silently continue on errors (some stocks may have insufficient data)
+            if "rate limit" in str(e).lower() or "too many requests" in str(e).lower():
+                print(f"   ⚠️  Rate limit hit at {ticker}, pausing 30 seconds...")
+                time.sleep(30)
+                # Retry this stock
+                try:
+                    analysis = screener.analyze_with_sentiment(ticker)
+                    if analysis:
+                        results.append(analysis)
+                except:
+                    pass
             pass
     
     elapsed_time = (datetime.now() - start_time).seconds
